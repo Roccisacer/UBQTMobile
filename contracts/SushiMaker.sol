@@ -11,18 +11,18 @@ import "./uniswapv2/interfaces/IUniswapV2Factory.sol";
 //
 // This contract handles "serving up" rewards for xSushi holders by trading tokens collected from fees for Sushi.
 
-contract SushiMaker {
+contract UBQTMaker  {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     IUniswapV2Factory public factory;
     address public bar;
-    address public sushi;
+    address public UBQT;
     address public weth;
 
     constructor(IUniswapV2Factory _factory, address _bar, address _sushi, address _weth) public {
         factory = _factory;
-        sushi = _sushi;
+        UBQT = _UBQT;
         bar = _bar;
         weth = _weth;
     }
@@ -36,13 +36,13 @@ contract SushiMaker {
         // First we convert everything to WETH
         uint256 wethAmount = _toWETH(token0) + _toWETH(token1);
         // Then we convert the WETH to Sushi
-        _toSUSHI(wethAmount);
+        _toUBQT(wethAmount);
     }
 
     // Converts token passed as an argument to WETH
     function _toWETH(address token) internal returns (uint256) {
         // If the passed token is Sushi, don't convert anything
-        if (token == sushi) {
+        if (token == UBQT) {
             uint amount = IERC20(token).balanceOf(address(this));
             _safeTransfer(token, bar, amount);
             return 0;
@@ -50,7 +50,7 @@ contract SushiMaker {
         // If the passed token is WETH, don't convert anything
         if (token == weth) {
             uint amount = IERC20(token).balanceOf(address(this));
-            _safeTransfer(token, factory.getPair(weth, sushi), amount);
+            _safeTransfer(token, factory.getPair(weth, UBQT), amount);
             return amount;
         }
         // If the target pair doesn't exist, don't convert anything
@@ -71,13 +71,13 @@ contract SushiMaker {
         (uint amount0Out, uint amount1Out) = token0 == token ? (uint(0), amountOut) : (amountOut, uint(0));
         // Swap the token for WETH
         _safeTransfer(token, address(pair), amountIn);
-        pair.swap(amount0Out, amount1Out, factory.getPair(weth, sushi), new bytes(0));
+        pair.swap(amount0Out, amount1Out, factory.getPair(weth, UBQT), new bytes(0));
         return amountOut;
     }
 
-    // Converts WETH to Sushi
-    function _toSUSHI(uint256 amountIn) internal {
-        IUniswapV2Pair pair = IUniswapV2Pair(factory.getPair(weth, sushi));
+    // Converts WETH to UBQT
+    function _toUBQT(uint256 amountIn) internal {
+        IUniswapV2Pair pair = IUniswapV2Pair(factory.getPair(weth, UBQT));
         // Choose WETH as input token
         (uint reserve0, uint reserve1,) = pair.getReserves();
         address token0 = pair.token0();
@@ -88,7 +88,7 @@ contract SushiMaker {
         uint denominator = reserveIn.mul(1000).add(amountInWithFee);
         uint amountOut = numerator / denominator;
         (uint amount0Out, uint amount1Out) = token0 == weth ? (uint(0), amountOut) : (amountOut, uint(0));
-        // Swap WETH for Sushi
+        // Swap WETH for UBQT
         pair.swap(amount0Out, amount1Out, bar, new bytes(0));
     }
 
