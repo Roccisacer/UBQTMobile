@@ -1,6 +1,6 @@
 Ubiquity Mobile
 
-https://Ubiquity . Feel free to read the code. More details coming soon.
+http://ubqtmobile.com/ . Feel free to read the code. More details coming soon.
 
 ## Deployed Contracts / Hash
 
