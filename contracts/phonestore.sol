@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 
-contract Masterdistributor {
+contract phonestore {
     using SafeMath for uint256;
     event Enter(address indexed user, uint256 amount);
     event Leave(address indexed user, uint256 amount);
